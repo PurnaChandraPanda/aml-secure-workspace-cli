@@ -3,7 +3,7 @@ set -e
 container_registry_resource=$(az ml workspace show --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME --query "container_registry" -o tsv)
 
 # exit, if there's no acr
-if [ -z "$container_registry" ]; then
+if [ -z "$container_registry_resource" ]; then
      echo "acr empty"
      exit
 fi
