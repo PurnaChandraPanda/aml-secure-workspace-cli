@@ -22,3 +22,11 @@ Update workspace in public to private via az cli.
 ```
 $ ./secure-workspace.sh
 ```
+
+## Create public workspace
+- Before running the script [create-public-workspace.sh](./create-public-workspace.sh), make sure to run: 1) az upgrade, 2) az login --identity.
+- Fill in required parameters in the script file.
+
+```
+$ ./create-public-workspace.sh
+```
