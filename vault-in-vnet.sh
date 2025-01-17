@@ -23,7 +23,7 @@ PE_VAULT_PRIVATE_CONNECTION_RESOURCE=/subscriptions/$SUBSCRIPTION_ID/resourceGro
 
 { # try
     VAULT_VNET_LINK_LIST=$(az network private-dns link vnet list -g $VNET_RESOURCE_GROUP -z $VAULT_PRIVATE_DNS_ZONE)
-    if [ ${#FILE_VNET_LINK_LIST[@]} > 0 ]; then
+    if [ $(echo $VAULT_VNET_LINK_LIST | jq '. | length') -gt 0 ]; then
         echo ">0 .. vault private dns vnet link exists"
     else
         echo "<=0 .. create private-dns link vnet"

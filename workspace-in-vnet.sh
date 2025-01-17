@@ -27,10 +27,10 @@ az ml workspace update --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME -
 
 { # try
     VNET_LINK_LIST=$(az network private-dns link vnet list -g $VNET_RESOURCE_GROUP -z $WORKSPACE_PRIVATE_DNS_ZONE)
-    if [ ${#VNET_LINK_LIST[@]} > 0 ]; then
+    if [ $(echo $VNET_LINK_LIST | jq '. | length') -gt 0 ]; then
         echo ">0 .. workspace private dns vnet link exists"
     else
-        echo "<=0 .. create private-dns link vnet"
+        echo "<=0 .. create workspace private-dns link vnet"
         link_name=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 13 | head -n 1)
         az network private-dns link vnet create -g $VNET_RESOURCE_GROUP --zone-name $WORKSPACE_PRIVATE_DNS_ZONE --name $link_name --virtual-network $VNET_NAME --registration-enabled false
     fi
@@ -54,10 +54,10 @@ az ml workspace update --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME -
 
 { # try
     NB_VNET_LINK_LIST=$(az network private-dns link vnet list -g $VNET_RESOURCE_GROUP -z $WORKSPACE_NB_PRIVATE_DNS_ZONE)
-    if [ ${#NB_VNET_LINK_LIST[@]} > 0 ]; then
+    if [ $(echo $NB_VNET_LINK_LIST | jq '. | length') -gt 0 ]; then
         echo ">0 .. NB workspace private dns vnet link exists"
     else
-        echo "<=0 .. create private-dns link vnet"
+        echo "<=0 .. create NB workspace private-dns link vnet"
         link_name=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 13 | head -n 1)
         az network private-dns link vnet create -g $VNET_RESOURCE_GROUP --zone-name $WORKSPACE_NB_PRIVATE_DNS_ZONE --name $link_name --virtual-network $VNET_NAME --registration-enabled false
     fi

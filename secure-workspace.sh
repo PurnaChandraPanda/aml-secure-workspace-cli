@@ -15,7 +15,7 @@ export REGION="" #centralindia
 export VNET_RESOURCE_GROUP="" #vnet-rg
 # vnet name where workspace is
 export VNET_NAME="" #testvnet
-# subnet namr where workspace is
+# subnet name where workspace is
 export SUBNET_NAME="" #amlsubnet
 
 # for private dns zones, the names shared are pretty much the standard in ml scenarios

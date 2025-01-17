@@ -31,7 +31,7 @@ export PE_REGISTRY_PRIVATE_CONNECTION_RESOURCE=/subscriptions/$SUBSCRIPTION_ID/r
 
 { # try
     REGISTRY_VNET_LINK_LIST=$(az network private-dns link vnet list -g $VNET_RESOURCE_GROUP -z $REGISTRY_PRIVATE_DNS_ZONE)
-    if [ ${#FILE_VNET_LINK_LIST[@]} > 0 ]; then
+    if [ $(echo $REGISTRY_VNET_LINK_LIST | jq '. | length') -gt 0 ]; then
         echo ">0 .. registry private dns vnet link exists"
     else
         echo "<=0 .. create private-dns link vnet"

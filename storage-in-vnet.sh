@@ -23,8 +23,8 @@ export PE_STORAGE_PRIVATE_CONNECTION_RESOURCE=/subscriptions/$SUBSCRIPTION_ID/re
 }
 
 { # try
-    FILE_VNET_LINK_LIST=$(az network private-dns link vnet list -g $VNET_RESOURCE_GROUP -z $STORAGE_FILE_PRIVATE_DNS_ZONE)
-    if [ ${#FILE_VNET_LINK_LIST[@]} > 0 ]; then
+    FILE_VNET_LINK_LIST=$(az network private-dns link vnet list -g $VNET_RESOURCE_GROUP -z $STORAGE_FILE_PRIVATE_DNS_ZONE)    
+    if [ $(echo $FILE_VNET_LINK_LIST | jq '. | length') -gt 0 ]; then
         echo ">0 .. file private dns vnet link exists"
     else
         echo "<=0 .. create private-dns link vnet"
@@ -51,7 +51,7 @@ export PE_STORAGE_PRIVATE_CONNECTION_RESOURCE=/subscriptions/$SUBSCRIPTION_ID/re
 
 { # try
     BLOB_VNET_LINK_LIST=$(az network private-dns link vnet list -g $VNET_RESOURCE_GROUP -z $STORAGE_BLOB_PRIVATE_DNS_ZONE)
-    if [ ${#BLOB_VNET_LINK_LIST[@]} > 0 ]; then
+    if [ $(echo $BLOB_VNET_LINK_LIST | jq '. | length') -gt 0 ]; then
         echo ">0 .. blob private dns vnet link exists"
     else
         echo "<=0 .. create private-dns link vnet"
