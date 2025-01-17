@@ -80,6 +80,11 @@ az aks create --name {aks-name} --resource-group {rg} --load-balancer-sku standa
 ```
 - Access the k8s resource in private jumpbox machine.
 
+- For `public k8s`, following command can be followed with just LB.
+```
+az aks create --name {aks-name} --resource-group {rg} --load-balancer-sku standard --generate-ssh-keys
+```
+
 ### kubectl session in Ubuntu
 Bash
 ```
