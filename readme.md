@@ -116,7 +116,11 @@ kubectl get deployments -A
 Update `cluster-name` and `resource-group` values, and then create k8s-extension for ml.
 
 ```
-az k8s-extension create --name aml --extension-type Microsoft.AzureML.Kubernetes --config enableTraining=True enableInference=True inferenceRouterServiceType=LoadBalancer allowInsecureConnections=True InferenceRouterHA=False --cluster-type managedClusters --cluster-name {} --resource-group {}  --scope cluster
+az k8s-extension create --name aml --extension-type Microsoft.AzureML.Kubernetes --config enableTraining=True enableInference=True inferenceRouterServiceType=LoadBalancer allowInsecureConnections=True InferenceRouterHA=False internalLoadBalancerProvider=azure --cluster-type managedClusters --cluster-name {} --resource-group {}  --scope cluster
+```
+- For `public k8s`, k8s-extension is to be installed without ILB.
+```
+az k8s-extension create --name aml --extension-type Microsoft.AzureML.Kubernetes --config enableTraining=True enableInference=True inferenceRouterServiceType=LoadBalancer allowInsecureConnections=True InferenceRouterHA=False --cluster-type managedClusters --cluster-name {} --resource-group {} --scope cluster
 ```
 
 ### Attach k8s compute
