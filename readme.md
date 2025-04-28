@@ -82,7 +82,7 @@ az aks create --name {aks-name} --resource-group {rg} --load-balancer-sku standa
 
 - For `public k8s`, following command can be followed with just LB.
 ```
-az aks create --name {aks-name} --resource-group {rg} --load-balancer-sku standard --generate-ssh-keys
+az aks create --name {aks-name} --resource-group {rg} --load-balancer-sku standard --node-vm-size Standard_DS3_v2 --generate-ssh-keys
 ```
 
 ### kubectl session in Ubuntu
