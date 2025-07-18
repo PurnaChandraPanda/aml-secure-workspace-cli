@@ -2,15 +2,10 @@ set -e
 
 export PE_SUFFIX=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 5 | head -n 1)
 export PE_WORKSPACE_NAME=$WORKSPACE_NAME-ws-pe-$PE_SUFFIX
-export PE_PRIVATE_CONNECTION_RESOURCE=/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.MachineLearningServices/workspaces/$WORKSPACE_NAME
+export PE_WORKSPACE_PRIVATE_CONNECTION_RESOURCE=/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.MachineLearningServices/workspaces/$WORKSPACE_NAME
 
 # set the subsctiption id
 az account set -s $SUBSCRIPTION_ID
-
-echo "updating workspace with public network access: disabled ....."
-
-# update the workspace to follow private network
-az ml workspace update --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME --file $WORKSPACE_PL_YML
 
 { # try
     WORKSPACE_PRIVATE_DNS_ZONE_RESULT=$(az network private-dns zone show -g $VNET_RESOURCE_GROUP -n $WORKSPACE_PRIVATE_DNS_ZONE --query "name" -o tsv)
@@ -67,14 +62,85 @@ az ml workspace update --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME -
 }
 
 # create private endpoint for workspace
-az network private-endpoint create --name $PE_WORKSPACE_NAME --vnet-name $VNET_NAME --subnet $SUBNET_NAME --resource-group $VNET_RESOURCE_GROUP --private-connection-resource-id $PE_PRIVATE_CONNECTION_RESOURCE --group-id amlworkspace --connection-name workspace -l $REGION
+EXISTING_PE=$(az network private-endpoint list \
+               --resource-group "$VNET_RESOURCE_GROUP" \
+               --query "[?
+                    privateLinkServiceConnections[0].privateLinkServiceId=='$PE_WORKSPACE_PRIVATE_CONNECTION_RESOURCE' &&
+                    contains(subnet.id, '$VNET_NAME/subnets/$SUBNET_NAME')
+                ].name" -o tsv)
+if [[ -z "$EXISTING_PE" ]]; then
+    echo "Creating private endpoint $PE_WORKSPACE_NAME ..."
+    az network private-endpoint create \
+            --name                          "$PE_WORKSPACE_NAME" \
+            --vnet-name                     "$VNET_NAME" \
+            --subnet                        "$SUBNET_NAME" \
+            --resource-group                "$VNET_RESOURCE_GROUP" \
+            --private-connection-resource-id "$PE_WORKSPACE_PRIVATE_CONNECTION_RESOURCE" \
+            --group-id                      amlworkspace \
+            --connection-name               workspace \
+            --location                      $REGION \
+            --only-show-errors
+else
+    echo "Private endpoint for workspace already exists: $EXISTING_PE"
+    
+    # Read the retrieved private endpoint name
+    PE_WORKSPACE_NAME=$EXISTING_PE
+fi
 
-sleep 1m
+# Create {workspace} DNS zone group for private dns zone 
+ZG_EXISTS=$(az network private-endpoint dns-zone-group list \
+              --resource-group      "$VNET_RESOURCE_GROUP" \
+              --endpoint-name       "$PE_WORKSPACE_NAME" \
+              --query "[?name=='$PRIVATE_DNS_ZONE_GROUP'].name" -o tsv)
+if [[ -z "$ZG_EXISTS" ]]; then
+    echo "Creating zone-group $PRIVATE_DNS_ZONE_GROUP (workspace)…"
+    az network private-endpoint dns-zone-group create \
+            --resource-group            "$VNET_RESOURCE_GROUP" \
+            --endpoint-name             "$PE_WORKSPACE_NAME" \
+            --name                      "$PRIVATE_DNS_ZONE_GROUP" \
+            --private-dns-zone          "$WORKSPACE_PRIVATE_DNS_ZONE" \
+            --zone-name                 "$WORKSPACE_PRIVATE_DNS_ZONE" \
+            --only-show-errors
+else
+    echo "Workspace zone-group $PRIVATE_DNS_ZONE_GROUP already exists"
+fi
 
-az network private-endpoint dns-zone-group create -g $VNET_RESOURCE_GROUP --endpoint-name $PE_WORKSPACE_NAME --name $PRIVATE_DNS_ZONE_GROUP --private-dns-zone $WORKSPACE_PRIVATE_DNS_ZONE --zone-name $WORKSPACE_PRIVATE_DNS_ZONE
+# Create {notebook} DNS zone group for private dns zone 
+NB_Z_EXISTS=$(az network private-endpoint dns-zone-group show \
+                --resource-group    "$VNET_RESOURCE_GROUP" \
+                --endpoint-name     "$PE_WORKSPACE_NAME" \
+                --name              "$PRIVATE_DNS_ZONE_GROUP" \
+                --query "privateDnsZoneConfigs[?name=='$WORKSPACE_NB_PRIVATE_DNS_ZONE'].name" \
+                -o tsv 2>/dev/null || true)
+if [[ -z "$NB_Z_EXISTS" ]]; then
+    echo "Adding notebook zone-group $PRIVATE_DNS_ZONE_GROUP (workspace)…"
+    az network private-endpoint dns-zone-group add \
+            --resource-group            "$VNET_RESOURCE_GROUP" \
+            --endpoint-name             "$PE_WORKSPACE_NAME" \
+            --name                      "$PRIVATE_DNS_ZONE_GROUP" \
+            --private-dns-zone          "$WORKSPACE_NB_PRIVATE_DNS_ZONE" \
+            --zone-name                 "$WORKSPACE_NB_PRIVATE_DNS_ZONE" \
+            --only-show-errors
+else
+    echo "Notebook zone-group $PRIVATE_DNS_ZONE_GROUP already exists"
+fi
 
-az network private-endpoint dns-zone-group add -g $VNET_RESOURCE_GROUP --endpoint-name $PE_WORKSPACE_NAME --name $PRIVATE_DNS_ZONE_GROUP --private-dns-zone $WORKSPACE_NB_PRIVATE_DNS_ZONE --zone-name $WORKSPACE_NB_PRIVATE_DNS_ZONE
+# update the workspace to follow private network
+# check current PNA state ----------------------------------------------------
+PNA_STATE=$(az ml workspace show \
+              --resource-group      "$RESOURCE_GROUP" \
+              --name                "$WORKSPACE_NAME" \
+              --query "public_network_access" -o tsv)
 
-sleep 1m
+if [[ "$PNA_STATE" == "Disabled" ]]; then
+    echo "Workspace $WORKSPACE_NAME already has public_network_access: Disabled - skip update"
+else
+    echo "Updating workspace to disable public network access …"
+    az ml workspace update \
+            --resource-group        "$RESOURCE_GROUP" \
+            --name                  "$WORKSPACE_NAME" \
+            --file                  "$WORKSPACE_PL_YML" \
+            --only-show-errors
+fi
 
 echo "workspace PE created"

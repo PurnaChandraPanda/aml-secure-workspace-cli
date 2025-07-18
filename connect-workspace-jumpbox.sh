@@ -1,25 +1,25 @@
 set -e
 
 # subscription id of workspace
-export SUBSCRIPTION_ID="" #9998------9b41
+export SUBSCRIPTION_ID="113fa5a0-47a2-4885-b356-7cdea074b808" #9998------9b41
 # resource group of vnet
-export VNET_RESOURCE_GROUP="" #vnet-rg
+export VNET_RESOURCE_GROUP="rg-vnet" #vnet-rg
 # vnet name where workspace is
-export VNET_NAME="" #testvnet
+export VNET_NAME="uservnet" #testvnet
 # location where vnet is
-export REGION="" #centralindia
+export REGION="australiaeast" #centralindia
 # bastion public ip name
-export BASTION_PUBLIC_IP_NAME="" #bastion-public-ip001
+export BASTION_PUBLIC_IP_NAME="bastion-public-ip001" #bastion-public-ip001
 # bastion rsource name
-export BASTION_HOST_NAME="" #bastion001
+export BASTION_HOST_NAME="bastion001" #bastion001
 # bastion subnet address prefixes
-export BASTION_SUBNET_ADDRESS_PREFIX="" #10.225.0.0/26
+export BASTION_SUBNET_ADDRESS_PREFIX="10.0.200.224/27" #10.0.200.224/27 when vnet address range: 10.0.0.0/16
 # jumpbox vm name
 export JUMPBOX_VM="jumpbox001" # vm name
-export VM_ADMIN_USER="" # vm admin user - e.g. vmadmin
-export VM_ADMIN_PWD="" # vm admin password
+export VM_ADMIN_USER="vmadmin" # vm admin user - e.g. vmadmin
+export VM_ADMIN_PWD="Password123!" # vm admin password
 # subnet where vm resides
-export VM_SUBNET="" #aks-subnet
+export VM_SUBNET="mlsubnet" #mlsubnet
 
 # set the subsctiption id
 az account set -s $SUBSCRIPTION_ID
@@ -97,7 +97,10 @@ az account set -s $SUBSCRIPTION_ID
             --vnet-name $VNET_NAME \
             --subnet $VM_SUBNET \
             --public-ip-address "" \
-            --security-type Standard
+            --nsg "" \
+            --size Standard_B2ms \
+            --location $REGION \
+            --only-show-errors
     else
         echo $VM_RESULT "- azure vm exists"
     fi

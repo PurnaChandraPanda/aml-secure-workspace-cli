@@ -1,6 +1,10 @@
 set -e
 
-key_vault_resource=$(az ml workspace show --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME --query "key_vault" -o tsv)
+key_vault_resource="$1"
+if [[ -z "$key_vault_resource" ]]; then
+    echo "Usage: vault-in-vnet.sh <key_vault_resource_id>"
+    exit 1
+fi
 key_vault_name=${key_vault_resource##*/}
 echo $key_vault_name
 
@@ -36,13 +40,66 @@ PE_VAULT_PRIVATE_CONNECTION_RESOURCE=/subscriptions/$SUBSCRIPTION_ID/resourceGro
 }
 
 # create private endpoint for vault
-az network private-endpoint create --name $PE_VAULT_NAME --vnet-name $VNET_NAME --subnet $SUBNET_NAME --resource-group $VNET_RESOURCE_GROUP --private-connection-resource-id $PE_VAULT_PRIVATE_CONNECTION_RESOURCE --group-id vault --connection-name vault -l $REGION
+EXISTING_PE=$(az network private-endpoint list \
+               --resource-group "$VNET_RESOURCE_GROUP" \
+               --query "[?
+                    privateLinkServiceConnections[0].privateLinkServiceId=='$PE_VAULT_PRIVATE_CONNECTION_RESOURCE' &&
+                    contains(subnet.id, '$VNET_NAME/subnets/$SUBNET_NAME')
+                ].name" -o tsv)
+if [[ -z "$EXISTING_PE" ]]; then
+    echo "Creating private endpoint $PE_VAULT_NAME …"
+    az network private-endpoint create \
+                --name                  "$PE_VAULT_NAME" \
+                --vnet-name             "$VNET_NAME" \
+                --subnet                "$SUBNET_NAME" \
+                --resource-group        "$VNET_RESOURCE_GROUP" \
+                --private-connection-resource-id "$PE_VAULT_PRIVATE_CONNECTION_RESOURCE" \
+                --group-id                vault \
+                --connection-name         vault \
+                --location $REGION
+else
+    echo "Private endpoint for Key Vault already exists: $EXISTING_PE"
 
-az network private-endpoint dns-zone-group create -g $VNET_RESOURCE_GROUP --endpoint-name $PE_VAULT_NAME --name $PRIVATE_DNS_ZONE_GROUP --private-dns-zone $VAULT_PRIVATE_DNS_ZONE --zone-name $VAULT_PRIVATE_DNS_ZONE
+    # Read the retrieved private endpoint name
+    PE_VAULT_NAME=$EXISTING_PE
+fi
 
-sleep 1m
+# create dns zone group for vault
+ZG_NAME=$(az network private-endpoint dns-zone-group show \
+            --endpoint-name  "$PE_VAULT_NAME" \
+            --name           "$PRIVATE_DNS_ZONE_GROUP" \
+            --resource-group "$VNET_RESOURCE_GROUP" \
+            --query name -o tsv 2>/dev/null)
+if [[ -z "$ZG_NAME" ]]; then
+    echo "Creating DNS-zone group for Key Vault endpoint …"
+    az network private-endpoint dns-zone-group create \
+        --resource-group        "$VNET_RESOURCE_GROUP" \
+        --endpoint-name         "$PE_VAULT_NAME" \
+        --name                  "$PRIVATE_DNS_ZONE_GROUP" \
+        --private-dns-zone      "$VAULT_PRIVATE_DNS_ZONE" \
+        --zone-name             "$VAULT_PRIVATE_DNS_ZONE" \
+        --only-show-errors
+else
+    echo "DNS-zone group for Key Vault already present"
+fi
 
-# update keyvault to disable public access
-az keyvault update --resource-group $RESOURCE_GROUP --name $key_vault_name --public-network-access Disabled
+
+# update the keyvault to follow private network
+# check current PNA state ----------------------------------------------------
+PNA_STATE=$(az keyvault show \
+              --resource-group "$RESOURCE_GROUP" \
+              --name            "$key_vault_name" \
+              --query "properties.publicNetworkAccess" \
+              -o tsv)
+if [[ "$PNA_STATE" == "Disabled" ]]; then
+    echo "Key Vault $key_vault_name already has public_network_access: Disabled - skip update"
+else
+    echo "Disabling public network access for Key Vault $key_vault_name..."
+    az keyvault update \
+            --resource-group        "$RESOURCE_GROUP" \
+            --name                  "$key_vault_name" \
+            --public-network-access Disabled \
+            --only-show-errors
+fi
 
 echo "keyvault PE created"

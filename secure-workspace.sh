@@ -36,13 +36,19 @@ export PRIVATE_DNS_ZONE_GROUP="default"
 
 echo "bash automation script is started"
 
+# Read storage account resource id from workspace
+storage_account_resource_id=$(az ml workspace show --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME --query "storage_account" -o tsv)
+# add pe for storage - blob, file
+sh ./storage-in-vnet.sh "$storage_account_resource_id"
+# Read keyvault resource id from workspace
+key_vault_resource=$(az ml workspace show --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME --query "key_vault" -o tsv)
+# add pe for keyvault
+sh ./vault-in-vnet.sh "$key_vault_resource"
+# Read acr resource id from workspace
+acr_resource=$(az ml workspace show --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME --query "container_registry" -o tsv)
+# add pe for registry
+sh ./registry-in-vnet.sh "$acr_resource"
 # add pe for workspace - api, notebook
 sh ./workspace-in-vnet.sh
-# add pe for storage - blob, file
-sh ./storage-in-vnet.sh
-# add pe for keyvault
-sh ./vault-in-vnet.sh
-# add pe for registry
-sh ./registry-in-vnet.sh
 
 echo "bash automation script is completed"

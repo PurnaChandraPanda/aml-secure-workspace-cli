@@ -1,13 +1,10 @@
 set -e
 
-container_registry_resource=$(az ml workspace show --resource-group $RESOURCE_GROUP --name $WORKSPACE_NAME --query "container_registry" -o tsv)
-
-# exit, if there's no acr
-if [ -z "$container_registry_resource" ]; then
-     echo "acr empty"
-     exit
+container_registry_resource="$1"
+if [[ -z "$container_registry_resource" ]]; then
+    echo "Usage: resgistry-in-vnet.sh <registry_resource_id>"
+    exit 1
 fi
-
 # continue, if there's acr
 container_registry_name=${container_registry_resource##*/}
 echo $container_registry_name
@@ -43,14 +40,69 @@ export PE_REGISTRY_PRIVATE_CONNECTION_RESOURCE=/subscriptions/$SUBSCRIPTION_ID/r
     echo "not found"
 }
 
-# create private endpoint for registry
-az network private-endpoint create --name $PE_REGISTRY_NAME --vnet-name $VNET_NAME --subnet $SUBNET_NAME --resource-group $VNET_RESOURCE_GROUP --private-connection-resource-id $PE_REGISTRY_PRIVATE_CONNECTION_RESOURCE --group-id registry --connection-name registry -l $REGION
+# Create private endpoint for registry
+EXISTING_PE=$(az network private-endpoint list \
+               --resource-group "$VNET_RESOURCE_GROUP" \
+               --query "[?
+                    privateLinkServiceConnections[0].privateLinkServiceId=='$PE_REGISTRY_PRIVATE_CONNECTION_RESOURCE' &&
+                    contains(subnet.id, '$VNET_NAME/subnets/$SUBNET_NAME')
+                ].name" -o tsv)
+if [[ -z "$EXISTING_PE" ]]; then
+    echo "Creating private endpoint $PE_REGISTRY_NAME ..."
+    az network private-endpoint create \
+                --name                  "$PE_REGISTRY_NAME" \
+                --vnet-name             "$VNET_NAME" \
+                --subnet                "$SUBNET_NAME" \
+                --resource-group        "$VNET_RESOURCE_GROUP" \
+                --private-connection-resource-id "$PE_REGISTRY_PRIVATE_CONNECTION_RESOURCE" \
+                --group-id              registry \
+                --connection-name       registry \
+                --location $REGION \
+                --only-show-errors
+else
+    echo "Private endpoint for Container Registry already exists: $EXISTING_PE"
 
-az network private-endpoint dns-zone-group create -g $VNET_RESOURCE_GROUP --endpoint-name $PE_REGISTRY_NAME --name $PRIVATE_DNS_ZONE_GROUP --private-dns-zone $REGISTRY_PRIVATE_DNS_ZONE --zone-name $REGISTRY_PRIVATE_DNS_ZONE
+    # Read the retrieved private endpoint name
+    PE_REGISTRY_NAME=$EXISTING_PE
+fi
 
-sleep 1m
+# Create DNS zone group for private dns zone
+ZG_NAME=$(az network private-endpoint dns-zone-group show \
+            --endpoint-name  "$PE_REGISTRY_NAME" \
+            --name           "$PRIVATE_DNS_ZONE_GROUP" \
+            --resource-group "$VNET_RESOURCE_GROUP" \
+            --query name -o tsv 2>/dev/null)
+if [[ -z "$ZG_NAME" ]]; then
+    echo "Creating DNS zone group for private endpoint $PE_REGISTRY_NAME ..."
+    az network private-endpoint dns-zone-group create \
+        --resource-group                "$VNET_RESOURCE_GROUP" \
+        --endpoint-name                 "$PE_REGISTRY_NAME" \
+        --name                          "$PRIVATE_DNS_ZONE_GROUP" \
+        --private-dns-zone              "$REGISTRY_PRIVATE_DNS_ZONE" \
+        --zone-name $REGISTRY_PRIVATE_DNS_ZONE \
+        --only-show-errors
+else
+    echo "DNS zone group for private endpoint $PE_REGISTRY_NAME already exists"
+fi
 
-# update acr to disable public access
-az acr update --resource-group $RESOURCE_GROUP --name $container_registry_name --public-network-enabled false
+
+# update the ACR to follow private network
+# check current PNA state ----------------------------------------------------
+PNA_STATE=$(az acr show \
+              --resource-group "$RESOURCE_GROUP" \
+              --name            "$container_registry_name" \
+              --query "publicNetworkAccess" \
+              -o tsv)
+if [[ "$PNA_STATE" == "Disabled" ]]; 
+then
+    echo "Container Registry $container_registry_name already has public_network_access: Disabled - skip update"
+else
+    echo "Disabling public network access for Container Registry $container_registry_name..."
+    az acr update \
+            --resource-group            "$RESOURCE_GROUP" \
+            --name                      "$container_registry_name" \
+            --public-network-enabled    false \
+            --only-show-errors
+fi
 
 echo "acr PE created"

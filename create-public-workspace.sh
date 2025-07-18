@@ -27,7 +27,7 @@ az account set -s $SUBSCRIPTION_ID
 }
 
 # create workspace - will create applicationinsights, storage, keyvault
-az ml workspace create -n $WORKSPACE_NAME -g $RESOURCE_GROUP
+az ml workspace create -n $WORKSPACE_NAME -g $RESOURCE_GROUP -l $REGION
 
 if $ACR_INTEGRATE 
 then
@@ -36,7 +36,7 @@ then
     REGISTRY_NAME=$WORKSPACE_NAME"reg"$random_suffix
 
     # create acr resource with admin enabled
-    REGISTRY_ID=$(az acr create -n $REGISTRY_NAME -g $RESOURCE_GROUP --sku Premium --admin-enabled true --query id -o tsv)
+    REGISTRY_ID=$(az acr create -n $REGISTRY_NAME -g $RESOURCE_GROUP -l $REGION --sku Premium --admin-enabled true --query id -o tsv)
     echo "acr resource -" $REGISTRY_ID
 
     # update aml with the just created acr as registry

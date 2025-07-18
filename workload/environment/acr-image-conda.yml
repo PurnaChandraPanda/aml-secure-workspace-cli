@@ -1,0 +1,5 @@
+$schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
+name: docker-image-plus-conda-example
+image: mlacr10092.azurecr.io/azureml/azureml_3746a51f90d919b5b5f9edd804512fa4:latest
+conda_file: condas/conda2.yml
+description: Environment created from a Docker image plus Conda environment.

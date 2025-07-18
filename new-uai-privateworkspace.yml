@@ -1,0 +1,18 @@
+$schema: https://azuremlschemas.azureedge.net/latest/workspace.schema.json
+name: ${WORKSPACE_NAME}
+resource_group: ${RESOURCE_GROUP}
+display_name: Bring your own dependent resources-example
+description: This configuration specifies a workspace configuration with existing dependent resources
+storage_account: ${STORAGE_ACCOUNT_ID}
+container_registry: ${ACR_ID}
+key_vault: ${KV_ID}
+application_insights: ${APP_INSIGHTS_ID}
+public_network_access: Disabled
+identity:
+  type: user_assigned
+  user_assigned_identities:
+    '${IDENTITY_ID}': {}
+primary_user_assigned_identity: '${IDENTITY_ID}'
+system_datastores_auth_mode: identity
+tags:
+  purpose: demonstration
