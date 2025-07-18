@@ -16,6 +16,8 @@ sudo apt-get install jq -y
 jq --version
 ```
 ## Create UAI based ml workspace in vnet
+
+```
 az upgrade -y
 az config set extension.dynamic_install_allow_preview=true
 az extension remove -n azure-cli-ml
@@ -23,8 +25,19 @@ az extension remove -n ml
 az extension add -n ml --upgrade
 az extension add -n application-insights
 ./create-private-uai-workspace.sh
+```
+
+**For jumpbox setup:**
+
+```
 az extension add -n bastion --upgrade
 ./connect-workspace-jumpbox.sh
+```
+
+**For vnet-gateway setup:**
+
+Follow [./vpn-gateway](./vpn-gateway) steps in readme.md.
+
 
 ## Create public workspace
 - Before running the script [create-public-workspace.sh](./create-public-workspace.sh), make sure to run: `1) az upgrade, 2) az login --identity`.
