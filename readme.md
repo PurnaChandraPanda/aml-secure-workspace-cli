@@ -1,8 +1,16 @@
-Update workspace in public to private via az cli.
+Work with ml workspace/ foundry resource over public/ private network via az cli.
 
 ## About
 - This follows the principles that are discussed in [create secure workspace](https://learn.microsoft.com/en-us/azure/machine-learning/tutorial-create-secure-workspace) doc.
 - It extends from [add private endpoint to workspace](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-configure-private-link?tabs=cli#add-a-private-endpoint-to-a-workspace) doc and have steps to update for all its sub-resources.
+
+## What all help?
+- Create public ml workspace [./create-public-workspace.sh](./create-public-workspace.sh)
+- Create/ update private ml workspace [./secure-workspace.sh](./secure-workspace.sh)
+- Create UAI based private ml workspace [./create-private-uai-workspace.sh](./create-private-uai-workspace.sh)
+- Create vnet jumpbox [./connect-workspace-jumpbox.sh](./connect-workspace-jumpbox.sh)
+- Create vnet gateway and vpn client [./vpn-gateway/](./vpn-gateway/)
+- Run ml test workload of image build [./workload/](./workload/)
 
 ## Pre-requisites
 - Have a workspace deployed in public - with registry or no registry resource availability condition is taken care.
