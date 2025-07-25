@@ -35,6 +35,7 @@ if [ -z "$PIP_RESULT" ]; then
     az network public-ip create \
       --resource-group $VNET_RESOURCE_GROUP \
       --name $PIP_NAME \
+      --location $REGION \
       --sku Standard \
       --allocation-method Static
 
