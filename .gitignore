@@ -3,6 +3,7 @@
 **/models/
 **/.amlgnore
 *.log
+k8s/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
