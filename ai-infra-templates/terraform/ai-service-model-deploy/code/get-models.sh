@@ -4,8 +4,8 @@ set -e
 
 # Variables
 # Replace with your Cognitive Services account name and resource group name
-accountName=""
-resourceGroupName=""
+accountName="foundryeus00321"
+resourceGroupName="rg-foundry1eus"
 
 #<list-models>
 # Gets the last version of each model definition available in the GlobalStandard SKU

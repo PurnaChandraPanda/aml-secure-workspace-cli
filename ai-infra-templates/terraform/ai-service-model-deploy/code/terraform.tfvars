@@ -3,8 +3,6 @@
 subscription_id           = ""
 ## resource group name where ai service is created
 resource_group_name       = ""
-## location of ai service resource
-location                  = ""
 ## name of ai service resource
 account_name              = ""
 
@@ -21,5 +19,5 @@ model_publisher_format    = ""
 # Optional—override defaults if needed
 sku_name                 = "GlobalStandard"
 ## supply TPM number for deployment, e.g. 500k
-capacity                 = 500
+capacity                 = 250
 content_filter_policy_name = "Microsoft.DefaultV2"

@@ -8,11 +8,6 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "location" {
-  description = "Region where the Cognitive Services account exists"
-  type        = string
-}
-
 variable "account_name" {
   description = "Name of the Azure AI services account"
   type        = string
