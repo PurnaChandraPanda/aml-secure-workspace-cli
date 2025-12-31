@@ -60,6 +60,18 @@ Capture both stdout and stderr into a log file. With help of `tee`, print stdout
 $ ./create-public-workspace.sh 2>&1 | tee -a sh.log
 ```
 
+## Create public ml workspace with UAI
+
+```
+az upgrade -y
+az config set extension.dynamic_install_allow_preview=true
+az extension remove -n azure-cli-ml
+sudo az extension remove -n ml
+sudo az extension add -n ml --upgrade
+sudo az extension add -n application-insights
+./create-public-uai-workspace.sh
+```
+
 ## Components
 - The file [workspace-in-vnet.sh](./workspace-in-vnet.sh) has logic to update private endpoints for aml workspace resource.
 - The file [storage-in-vnet.sh](./storage-in-vnet.sh) has logic to update private endpoints for storage resource.
