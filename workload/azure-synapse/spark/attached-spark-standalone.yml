@@ -1,0 +1,40 @@
+# attached-spark-standalone.yaml
+$schema: https://azuremlschemas.azureedge.net/latest/sparkJob.schema.json
+type: spark
+
+code: ./src
+entry:
+  file: titanic.py
+
+conf:
+  spark.files: log4j2.properties
+  spark.driver.extraJavaOptions: -Dlog4j.configurationFile=log4j2.properties
+  spark.executor.extraJavaOptions: -Dlog4j.configurationFile=log4j2.properties
+  spark.driver.cores: 1
+  spark.driver.memory: 2g
+  spark.executor.cores: 2
+  spark.executor.memory: 2g
+  spark.executor.instances: 2
+
+inputs:
+  titanic_data:
+    type: uri_file
+    path: azureml://datastores/workspaceblobstore/paths/data/titanic.csv
+    # path: wasbs://azureml-blobstore-35360ec3-dad7-4730-b416-e070aaa7bd5c@mlstorage10092.blob.core.windows.net/data/titanic.csv
+    mode: direct
+
+outputs:
+  wrangled_data:
+    type: uri_folder
+    path: azureml://datastores/workspaceblobstore/paths/data/wrangled/
+    # path: wasbs://azureml-blobstore-35360ec3-dad7-4730-b416-e070aaa7bd5c@mlstorage10092.blob.core.windows.net/data/wrangled/
+    mode: direct
+
+args: >-
+  --titanic_data ${{inputs.titanic_data}}
+  --wrangled_data ${{outputs.wrangled_data}}
+
+identity:
+  type: managed
+
+compute: <ATTACHED_SPARK_POOL_NAME>

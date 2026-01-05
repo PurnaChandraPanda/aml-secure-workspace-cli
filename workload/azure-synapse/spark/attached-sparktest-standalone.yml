@@ -1,0 +1,19 @@
+# attached-spark-standalone.yaml
+$schema: https://azuremlschemas.azureedge.net/latest/sparkJob.schema.json
+type: spark
+
+code: ./src
+entry:
+  file: test.py
+
+conf:
+  spark.driver.cores: 1
+  spark.driver.memory: 2g
+  spark.executor.cores: 2
+  spark.executor.memory: 2g
+  spark.executor.instances: 2
+
+identity:
+  type: managed
+
+compute: <ATTACHED_SPARK_POOL_NAME>
