@@ -30,7 +30,7 @@
 - As all Azure ML bound operations for Synapse are supposed to be carried by UAI, make sure the UAI has `contributor` role on the synapse instance (if not already present).
 
 - For managed vnet based synapse instance, validate on `managed private endpoints`.
-    - Design in ml job flow is like: once incoming traffic is received in worker pools (when submitted azureml job), it has to make outbound calls for `azureml service` and `azure blob storage` instances (blob storage is already attached to azureml service).
+    - Design in ml job flow is like: once incoming traffic is received in worker pools (when submitted azureml job), it has to make outbound calls for `azureml service` and azure storage `blob`, `dfs` instances (storage is already attached to azureml service).
     - For outbound calls to succeed, create managed PEs by launching the synapse studio -> managed private endpoints -> {+New}. 
     - Manual step would be to navigate to those destination service -> networking -> private endpoints -> [approve] the private endpoint creation.
 
