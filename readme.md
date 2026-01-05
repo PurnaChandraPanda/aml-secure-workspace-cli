@@ -10,7 +10,7 @@ Work with ml workspace/ foundry resource over public/ private network via az cli
 - Create UAI based private ml workspace [./create-private-uai-workspace.sh](./create-private-uai-workspace.sh)
 - Create vnet jumpbox [./connect-workspace-jumpbox.sh](./connect-workspace-jumpbox.sh)
 - Create vnet gateway and vpn client [./vpn-gateway/](./vpn-gateway/)
-- Run ml test workload of image build [./workload/](./workload/)
+- Run ml test workloads [./workload/](./workload/)
 
 ## Pre-requisites
 - Have a workspace deployed in public - with registry or no registry resource availability condition is taken care.
