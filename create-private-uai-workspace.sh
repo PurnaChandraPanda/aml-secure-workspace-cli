@@ -40,10 +40,10 @@ export REGISTRY_PRIVATE_DNS_ZONE="privatelink.azurecr.io"
 export PRIVATE_DNS_ZONE_GROUP="default"
 
 # Set the current user login - to authenticate with Azure CLI 
-# interactively against the other tenant if current user may be mapped to multiple tenants
-az login --tenant $TENANT_ID --use-device-code
-# # For managed identity, you can use the following command to login current tenant
-# az login --identity
+# # interactively against the other tenant if current user may be mapped to multiple tenants
+# az login --tenant $TENANT_ID --use-device-code
+# For managed identity, you can use the following command to login current tenant
+az login --identity
 # Set the subscription id
 az account set --subscription $SUBSCRIPTION_ID 
 
