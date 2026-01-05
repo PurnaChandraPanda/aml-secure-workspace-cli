@@ -1,3 +1,12 @@
+## Table of contents
+- [Setup Azure Synapse](#setup-azure-synapse)
+- [Setup Azure Synapse on AzureML side](#setup-azure-synapse-on-azureml-side)
+  - [Interactive spark notebook experience](#interactive-spark-notebook-experience)
+  - [Remote spark job submit experience](#remote-spark-job-submit-experience)
+- [Spark code level logging](#spark-code-level-logging)
+- [Pre-requisite for workload run](#pre-requisite-for-workload-run)
+- [Run workload (in Windows machine) in Powershell](#run-workload-in-windows-machine-in-powershell)
+
 ## Setup Azure Synapse
 - Azureml workspace is created with PEs for own vnet, having PNA disabled and UAI based identity-based access is setup for workspace mapped Storage account.
 - Two options to create "Azure Synapse Analytics" service resources:
@@ -223,7 +232,7 @@ conf:
 ```
 
 
-## Pre-requisite
+## Pre-requisite for workload run
 - Run it in jumpbox Windows PC, or let PC be connect via vnet gateway
 - In .ps1 files, remember to set current Azure resource details
 
