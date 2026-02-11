@@ -1,0 +1,6 @@
+subscription_id                 = "6977e295-----------------32103"
+resource_group_name             = "rg-stdfoundry"
+foundry_account_name            = "aifoundry1231"
+foundry_project_name            = "project1231"
+existingAoaiResourceId          = "/subscriptions/6977e295-----------------32103/resourceGroups/rg-stdfoundry/providers/Microsoft.CognitiveServices/accounts/new1aoai"
+aoaiConnectionName              = "existing31-aoai"

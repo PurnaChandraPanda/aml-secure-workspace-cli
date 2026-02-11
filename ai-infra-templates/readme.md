@@ -1,1 +1,2 @@
-These are just infra templates for reference.
+- These are just foundry infra templates for reference.
+- This folder contains the additional templates for foundry resource details under special circumstances than currently available in public repo for [foundry infrastructure](https://github.com/microsoft-foundry/foundry-samples/tree/main/infrastructure).

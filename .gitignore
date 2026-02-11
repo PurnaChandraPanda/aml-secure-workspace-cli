@@ -4,6 +4,8 @@
 **/.amlgnore
 *.log
 k8s/
+*.amltmp
+terraform.tfvars
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
