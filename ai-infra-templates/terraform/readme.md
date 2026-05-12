@@ -20,6 +20,8 @@ winget install HashiCorp.Terraform
 
 ## About terraform templates
 
+- [15b-private-network-standard-agent-setup-byovnet-byor](./15b-private-network-standard-agent-setup-byovnet-byor/README.md)
+    - Deploy Foundry standard agent in BYO VNET with BYOR
 - [15b-aoaiexist-private-network-standard-agent-setup-byovnet](./15b-aoaiexist-private-network-standard-agent-setup-byovnet/README.md)
     - Deploy Foundry standard agent in BYO VNET with existing AOAI
 - [15b-aoaiexist-private-standard-agent](./15b-aoaiexist-private-standard-agent/readme.md)
