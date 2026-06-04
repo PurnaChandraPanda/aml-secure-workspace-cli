@@ -1,0 +1,1 @@
+AzureML related generic bicep/ terraform templates are created for reference.
