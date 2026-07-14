@@ -238,7 +238,7 @@ export MSYS_NO_PATHCONV=1
 ./scripts/deploy_3.sh
 ```
 
-- In stage 2, get [vpn setup](../vpn-gateway/readme.md) ready with vpn gateway service installed and then vpn client configured as well. 
+- In stage 2, get [vpn setup](../../vpn-gateway/readme.md) ready with vpn gateway service installed and then vpn client configured as well. 
     - As this is local DNS, update local hosts file with PE FQDN entries.
     - If its onprem DNS involved, then make sure either conditional forwarder or A records are kept on custom dns servers.
 - Validate basic conncectivity to PE resource - of discovery and storage (kept in discovery RG).
