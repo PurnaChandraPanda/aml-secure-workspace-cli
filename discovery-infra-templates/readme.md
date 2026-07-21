@@ -18,5 +18,8 @@ This repository contains Bicep templates and helper scripts for deploying Micros
 
 - For customer or user access to the Discovery workspace data-plane endpoint, use a customer-owned VNet and create a workspace private endpoint. Microsoft Discovery documents workspace private endpoint support with group ID `workspace` and Private DNS zone `privatelink.workspace.discovery.azure.com`.
 
+## Cleanup resources
+Follow [Discovery cleanup](./.scripts/readme.md) script.
+
 ## References
 - [Network security in Discovery](https://learn.microsoft.com/en-us/azure/microsoft-discovery/concept-network-security)
