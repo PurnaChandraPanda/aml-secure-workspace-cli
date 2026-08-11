@@ -3,15 +3,13 @@ from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import PromptAgentDefinition
 
-# Project endpoint with format: https://{your-resource-name}.services.ai.azure.com/api/projects/{your-project-name}
-PROJECT_ENDPOINT = "https://aifoundry3385.services.ai.azure.com/api/projects/project3385"
+PROJECT_ENDPOINT = "https://foundryeus00321.services.ai.azure.com/api/projects/firstProject"  # your project endpoint
+# AGENT_NAME = "v2agent-using-curr1-aoai"
+AGENT_NAME = "v2agent-using-ext111-aoai"
+MODEL_DEPLOYMENT_NAME = "gpt-5.2-chat"
+# MODEL_DEPLOYMENT_NAME = "existing31-aoai/gpt-4o-mini"
 
-AGENT_NAME = "v2agent-using-ext1-aoai"
 
-# MODEL_DEPLOYMENT_NAME = "existing31-aoai/gpt-4o-mini" # Note: this format will work for apim deployment model
-MODEL_DEPLOYMENT_NAME = "gpt-4o-mini"
-
-# Create project client
 project_client = AIProjectClient(
     endpoint=PROJECT_ENDPOINT,
     credential=DefaultAzureCredential(),

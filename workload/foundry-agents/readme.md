@@ -1,22 +1,48 @@
-## For foundry agent v1 (in venv)
+## For v1 (in venv)
 ```
 pip install azure-ai-projects==1.1.0b4
 ```
 
-```
-cd v1-agents
+```bash
+cd foundry-agent/v1-agents
+
+python list-deployments.py
+
+# create/ run agent
+python create-agent.py
+python run-agent.py
+
+# create ai search agent/ run
 python create-agent.py
 python run-agent.py
 ```
 
-## For foundry agent v2 (in venv)
+## For v2 (in venv)
 ```
-pip install azure-ai-projects==2.0.0b3
+pip install azure-ai-projects==2.3.0
 ```
 
+```bash
+cd foundry-agent/v2-agents
+
+# create/ run agent
+python v2create-agent.py
+python v2run-agent.py
+
+# run agent via rapi
+python v2run-rapi.py
+
+# create ai search agent/ run
+python create-aisearch-agent.py
+python v2run-agent.py
+
+# run agent in stream mode
+python run-agent-stream.py
+
+# create fike search agent/ run
+python create-filesearch-agent.py
+python v2run-agent.py
 ```
-cd v2-agents
-python create-agent.py
-python run-agent.py
-```
+
+
 

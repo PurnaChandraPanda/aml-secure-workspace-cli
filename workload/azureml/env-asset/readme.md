@@ -4,7 +4,7 @@
 
 ## Run workload (in Windows machine) in Powershell
 ```
-cd .\workload\env-asset\
+cd .\workload\azureml\env-asset\
 .\-1.unblock-files.bat  
 .\0.pre-requisites.ps1  
 .\1.prep-for-ml.ps1  

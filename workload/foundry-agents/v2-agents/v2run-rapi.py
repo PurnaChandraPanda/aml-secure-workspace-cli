@@ -2,10 +2,14 @@ import os
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 
-# Project endpoint with format: https://{your-resource-name}.services.ai.azure.com/api/projects/{your-project-name}
-PROJECT_ENDPOINT = "https://aifoundry3385.services.ai.azure.com/api/projects/project3385"
+PROJECT_ENDPOINT = "https://aifoundry3385.services.ai.azure.com/api/projects/project3385"  # your project endpoint
 
-MODEL_DEPLOYMENT_NAME = "gpt-4o-mini"
+MODEL_DEPLOYMENT_NAME = "existing31-aoai/gpt-4o-mini"
+# MODEL_DEPLOYMENT_NAME = "gpt-4o-mini"
+
+# import logging
+# import sys
+# logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 project_client = AIProjectClient(
     endpoint=PROJECT_ENDPOINT,

@@ -10,7 +10,7 @@ from azure.ai.agents.models import (
 )
 
 # Project endpoint with format: https://{your-resource-name}.services.ai.azure.com/api/projects/{your-project-name}
-PROJECT_ENDPOINT = "https://aifoundry1231.services.ai.azure.com/api/projects/project1231"  
+PROJECT_ENDPOINT = "https://aifoundry3738.services.ai.azure.com/api/projects/project3738"  
 
 def main(user_input: str):
     # Create the AI Project Client
@@ -20,8 +20,8 @@ def main(user_input: str):
     )
 
     # Retrieve the agent definition based on the `agent_id`
-    agent = project_client.agents.get_agent(
-                        agent_id="asst_9LKtTdIlmn4QBuNGAdJS4uI0"  
+    agent = project_client.agents.get_agent( 
+                        agent_id="asst_jdMlPwSgRDSjLSavBO1ZD3my"
                         )
     print(f"Retrieved agent, agent ID: {agent.id}")
     print(f"Agent model: {getattr(agent, 'model', None)}")
@@ -70,6 +70,5 @@ def main(user_input: str):
 
 
 if __name__ == "__main__":
-    print("Supply the prompt message for agent interaction: ")
-    _input = input()
+    _input = "what is the NASA earth book about"
     main(_input)
