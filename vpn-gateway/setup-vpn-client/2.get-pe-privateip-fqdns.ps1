@@ -13,7 +13,9 @@ $types = @(
   "Microsoft.MachineLearningServices/workspaces",
   "Microsoft.KeyVault/vaults",
   "microsoft.containerregistry/registries",
-  "microsoft.insights/components"
+  "microsoft.insights/components",
+  "microsoft.synapse/workspaces",
+  "microsoft.discovery/workspaces"
 )
 
 # Initialize an empty collection to hold results
@@ -35,9 +37,42 @@ foreach ($type in $types) {
     foreach ($res in $resources) {
         Write-Host "`n-- Resource: $res"
 
-        $pecs = az network private-endpoint-connection list `
-                    --id $res `
-                    --query "[]" -o json | ConvertFrom-Json
+        # Discovery workspace is not handled well by:
+        # az network private-endpoint-connection list --id <workspaceId>
+        # So read privateEndpointConnections directly from the workspace JSON.
+        if ($type -ieq "microsoft.discovery/workspaces" -or $type -ieq "Microsoft.Discovery/workspaces") {
+            Write-Host "    Discovery workspace detected. Reading privateEndpointConnections from workspace JSON."
+
+            $workspaceObj = az resource show `
+                --ids $res `
+                -o json | ConvertFrom-Json
+
+            $pecs = @($workspaceObj.properties.privateEndpointConnections)
+
+            # Derive workspace API FQDN from workspaceApiUri.
+            $workspaceApiUri = $workspaceObj.properties.workspaceApiUri
+            $workspaceFqdn = $null
+
+            if ($workspaceApiUri -and $workspaceApiUri.Trim().Length -gt 0) {
+                try {
+                    $workspaceFqdn = ([System.Uri]$workspaceApiUri).Host
+                }
+                catch {
+                    $workspaceFqdn = $workspaceApiUri `
+                        -replace '^https://', '' `
+                        -replace '^http://', '' `
+                        -replace '/$', ''
+                }
+
+                Write-Host "    Workspace API FQDN: $workspaceFqdn"
+            }
+        }
+        else {
+            $pecs = az network private-endpoint-connection list `
+                --id $res `
+                --query "[]" `
+                -o json | ConvertFrom-Json
+        }
 
         if (-not $pecs) {
             Write-Host "    (no private endpoint connections)"

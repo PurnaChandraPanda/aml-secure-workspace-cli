@@ -25,8 +25,9 @@ https://learn.microsoft.com/en-us/azure/vpn-gateway/point-to-site-entra-gateway
 
 - In PowerShell, run in following order
 ```
-.\-1.unblock-files.bat  
-.\0.pre-requisites.ps1  
+.\-1.unblock-files.bat
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\0.pre-requisites.ps1
 .\1.install-azurevpn-client.ps1
 .\2.get-pe-privateip-fqdns.ps1
 ```

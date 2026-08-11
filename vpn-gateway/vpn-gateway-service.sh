@@ -37,7 +37,8 @@ if [ -z "$PIP_RESULT" ]; then
       --name $PIP_NAME \
       --location $REGION \
       --sku Standard \
-      --allocation-method Static
+      --allocation-method Static \
+      --zone 1 2 3
 
     # Wait until provisioning completes
     az network public-ip wait \
@@ -91,7 +92,7 @@ if [ -z $VPN_GATEWAY_RESULT ]; then
       --gateway-type Vpn \
       --public-ip-address $PIP_NAME \
       --vpn-type RouteBased \
-      --sku VpnGw1 \
+      --sku VpnGw1AZ \
       --no-wait
 
     # Wait until the vnet Gateway is fully provisioned
