@@ -38,15 +38,22 @@ pip install python-dotenv
 
 ## Run the sample
 
-```
+```powershell
 cd azure-search-rag (if not already)
 
+# rename .env.example to .env/ feed required service/ model details
+
+# get blob storage ready with grounded data
 .\0.prep_data_storage.ps1
 
-1.build_rag_pipeline.py
-python 2.search_generate.py
-3.maximize_relevance.py
+# build rag pipeline
+python 1.build_rag_pipeline.py
 
+# generate search results
+python 2.search_generate.py
+
+# maximize relevance of search results
+python 3.maximize_relevance.py
 ```
 
 ## Reference
