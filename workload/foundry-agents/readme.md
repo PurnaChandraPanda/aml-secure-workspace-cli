@@ -19,7 +19,7 @@ python run-agent.py
 
 ## For v2 (in venv)
 ```
-pip install azure-ai-projects==2.3.0
+pip install azure-ai-projects==2.3.0 (or later)
 ```
 
 ```powershell
@@ -50,6 +50,8 @@ As in these py files there's no `.env` mapped, before running the codes be sure 
 As a pre-requisite of this sample, run [1.1.citation_build_rag_pipeline.py](azure-search-rag/1.1.citation_build_rag_pipeline.py). This will get search index created to ensure citation part is properly reflected with `source_url` details.
 
 ```bash
+cd foundry-agent/v2-agents # (if not already done)
+
 # register index asset in foundry
 python register-search-index-asset.py
 
