@@ -19,11 +19,16 @@ agent_name = AGENT_NAME
 openai_client = project_client.get_openai_client()
 
 def main(user_input: str):
+    # Optional Step: Create a conversation to use with the agent
+    conversation = openai_client.conversations.create()
+    print(f"Created conversation (id: {conversation.id})")
+
     # Create a conversation to use with the agent
     stream_response = openai_client.responses.create(
         stream=True,
         tool_choice="required",
         input=user_input,
+        conversation=conversation.id,
         extra_body={"agent_reference": {"name": AGENT_NAME, "version": AGENT_VERSION, "type": "agent_reference"}},
         )
     
@@ -48,6 +53,7 @@ def main(user_input: str):
                                 f"Start index: {annotation.start_index}, "
                                 f"End index: {annotation.end_index}"
                             )
+                        
         elif event.type == "response.completed":
             print(f"\nFollow-up completed!")
             print(f"Agent response: {event.response.output_text}")

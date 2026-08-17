@@ -44,5 +44,20 @@ python create-filesearch-agent.py
 python v2run-agent.py
 ```
 
+### For search citation
+As in these py files there's no `.env` mapped, before running the codes be sure to update foundry project, search connection, index details properly.
+
+As a pre-requisite of this sample, run [1.1.citation_build_rag_pipeline.py](azure-search-rag/1.1.citation_build_rag_pipeline.py). This will get search index created to ensure citation part is properly reflected with `source_url` details.
+
+```bash
+# register index asset in foundry
+python register-search-index-asset.py
+
+# create prompt agent that has custom field mapping for index retrieve as tool (refer to existing index asset)
+python create-aisearch-agent-with-url.py 
+
+# run prompt agent to show url citation
+python run-agent-stream.py
+```
 
 

@@ -29,7 +29,7 @@ In a good RAG solution, following qualities are important.
 ## For Azure AI Search
 
 ```
-pip install azure-search-documents==11.7.0b2
+pip install azure-search-documents==12.0.0 (or later)
 ```
 
 ```
@@ -55,6 +55,14 @@ python 2.search_generate.py
 # maximize relevance of search results
 python 3.maximize_relevance.py
 ```
+
+With url citation is if in plans, create index with source_url mapping into source as `/document/metadata_storage_path`
+
+```bash
+python 1.1.citation_build_rag_pipeline.py
+```
+
+Post this, the search index can be used on Foundry agents side as a tool.
 
 ## Reference
 - [Package referecnce for azure-search-documents](https://pypi.org/project/azure-search-documents)
