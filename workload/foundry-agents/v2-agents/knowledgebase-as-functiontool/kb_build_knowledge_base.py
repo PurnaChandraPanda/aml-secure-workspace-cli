@@ -1,5 +1,5 @@
 """
-Route B - Step 1: Build the Azure AI Search Knowledge Base (agentic retrieval)
+Step 1: Build the Azure AI Search Knowledge Base (agentic retrieval)
 on top of the EXISTING index, so we can back a Foundry agent with it.
 
 This does three things (idempotent):
@@ -11,8 +11,7 @@ This does three things (idempotent):
      model for query planning.
 
 NETWORK: talks DIRECTLY to the Azure AI Search service endpoint
-(https://<svc>.search.windows.net). That endpoint is private (10.0.0.13) and
-must be reachable from wherever this runs (i.e. inside the vnet).
+(https://<svc>.search.windows.net). 
 
 Requires: azure-search-documents (with knowledgebases), python-dotenv.
 """
@@ -34,17 +33,19 @@ from azure.search.documents.indexes.models import (
     AzureOpenAIVectorizerParameters,
 )
 
+load_dotenv()
+
 # Existing search service, index name
-AZURE_SEARCH_SERVICE = "https://aifoundry3738search.search.windows.net"
-INDEX_NAME = "py-citation-rag-tutorial-idx"
+AZURE_SEARCH_SERVICE = os.getenv("AZURE_SEARCH_SERVICE")
+INDEX_NAME = os.getenv("INDEX_NAME")
 
 # Existing foundry openai endpoint and deployment name (must be a chat model)
-AZURE_OPENAI_ACCOUNT = "https://aifoundry3738.openai.azure.com/"
+AZURE_OPENAI_ACCOUNT = os.getenv("AZURE_OPENAI_ENDPOINT")
 AZURE_OPENAI_LLM_DEPLOYMENT = "gpt-4o"
 
-SEMANTIC_CONFIG_NAME = "py-citation-semconfig"
-KNOWLEDGE_SOURCE_NAME = "py-citation-ks"
-KNOWLEDGE_BASE_NAME = "py-citation-kb"
+SEMANTIC_CONFIG_NAME = os.getenv("SEMANTIC_CONFIG_NAME")
+KNOWLEDGE_SOURCE_NAME = os.getenv("KNOWLEDGE_SOURCE_NAME")
+KNOWLEDGE_BASE_NAME = os.getenv("KNOWLEDGE_BASE_NAME")
 
 credential = DefaultAzureCredential()
 index_client = SearchIndexClient(endpoint=AZURE_SEARCH_SERVICE, credential=credential)

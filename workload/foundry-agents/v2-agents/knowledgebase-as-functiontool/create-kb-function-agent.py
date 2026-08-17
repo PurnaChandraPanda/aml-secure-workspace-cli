@@ -1,5 +1,5 @@
 """
-Route B - Step 2: Create the Foundry agent, backed by the Knowledge Base via a
+Step 2: Create the Foundry agent, backed by the Knowledge Base via a
 FUNCTION TOOL bridge.
 
 Why a function tool? azure-ai-projects 2.3.0's AzureAISearchTool can only target
@@ -7,12 +7,16 @@ an *index*, not a Knowledge Base. So instead of the built-in search tool, we giv
 the agent a function `search_knowledge_base(query)`. At runtime OUR code fulfils
 that call by invoking the KB retrieval client (see run-kb-agent-stream.py).
 """
+import os
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import FunctionTool, PromptAgentDefinition
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Foundry project endpoint with format: https://{your-resource-name}.services.ai.azure.com/api/projects/{your-project-name}
-PROJECT_ENDPOINT = "https://aifoundry3738.services.ai.azure.com/api/projects/project3738"
+PROJECT_ENDPOINT = os.getenv("PROJECT_ENDPOINT")
 
 # Foundry prompt agent to create with LLM model and function-tool bridge to the knowledge base
 AGENT_NAME = "v2agent-rag-kb-001"

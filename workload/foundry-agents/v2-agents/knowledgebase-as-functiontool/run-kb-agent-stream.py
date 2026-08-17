@@ -1,5 +1,5 @@
 """
-Route B - Step 3: Run the KB-backed agent, fulfilling its function calls by
+Step 3: Run the KB-backed agent, fulfilling its function calls by
 querying the Azure AI Search Knowledge Base.
 
 Flow (OpenAI responses function-calling loop):
@@ -26,19 +26,21 @@ from azure.search.documents.knowledgebases.models import (
     KnowledgeSourceParams,
 )
 
+load_dotenv()
+
 sys.stdout.reconfigure(encoding="utf-8")  # print citation glyphs on Windows
 
 # Foundry project endpoint with format: https://{your-resource-name}.services.ai.azure.com/api/projects/{your-project-name}
-PROJECT_ENDPOINT = "https://aifoundry3738.services.ai.azure.com/api/projects/project3738"
+PROJECT_ENDPOINT = os.getenv("PROJECT_ENDPOINT")
 
 # Created foundry prompt agent name, version details
 AGENT_NAME = "v2agent-rag-kb-001"
 AGENT_VERSION = "1"
 
 # Azure Search service endpoint and Knowledge Base, Source details
-AZURE_SEARCH_SERVICE = "https://aifoundry3738search.search.windows.net"
-KNOWLEDGE_BASE_NAME = "py-citation-kb"
-KNOWLEDGE_SOURCE_NAME = "py-citation-ks"
+AZURE_SEARCH_SERVICE = os.getenv("AZURE_SEARCH_SERVICE")
+KNOWLEDGE_SOURCE_NAME = os.getenv("KNOWLEDGE_SOURCE_NAME")
+KNOWLEDGE_BASE_NAME = os.getenv("KNOWLEDGE_BASE_NAME")
 TOP_K_REFERENCES = 5  # cap citations passed to the model / printed
 
 credential = DefaultAzureCredential()

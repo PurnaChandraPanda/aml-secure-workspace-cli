@@ -62,25 +62,13 @@ python create-aisearch-agent-with-url.py
 python run-agent-stream.py
 ```
 
-## For Foundry IQ KB citation in Foundry prompt agents
+### For Foundry IQ KB citation as mcp tool in Foundry prompt agents
 
-- To work with search service, from client side, make sure `azure-search-documents==12.0.0` (or latest) is installed.
-- Use existing AI Search index with a mix of semantic configuration to create knowledge base.
+Follow sample: [./v2-agents/knowledgebase-as-mcp/](./v2-agents/knowledgebase-as-mcp/).
 
-```bash
-cd foundry-agent/v2-agents # (if not already done)
+Refer docs for [KB-as-mcptool](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/foundry-iq-connect?tabs=foundry%2Cpython).
 
-# Set foundry/ model param details inside the file
-# 1. create semantic config + KS + KB
-python kb_build_knowledge_base.py
+### For Foundry IQ KB citation as function tool in Foundry prompt agents
 
-# Set foundry/ model param details inside the file
-# 2. prints the agent version...
-python create-kb-function-agent.py
-
-# Set foundry/ model param details inside the file
-# set AGENT_VERSION in run-kb-agent-stream.py to that number, then:
-# 3. run the KB-backed agent
-python run-kb-agent-stream.py
-```
+Follow sample: [./v2-agents/knowledgebase-as-functiontool/](./v2-agents/knowledgebase-as-functiontool/).
 
