@@ -99,3 +99,4 @@ azureml-fe-v2-68bdb9bb7b-kzbqb                           3/3     Running     0  
 azureml-fe-v2-68bdb9bb7b-s75t2                           3/3     Running     0             49m10.0.0.31   aks-system1-41291085-vmss000000   <none>           <none>
 ```
 
+To test k8s job workloads, follow [/k8s/job](../workload/azureml/k8s/job).
