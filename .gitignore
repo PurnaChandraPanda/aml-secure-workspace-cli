@@ -3,7 +3,6 @@
 **/models/
 **/.amlgnore
 *.log
-k8s/
 *.amltmp
 terraform.tfvars
 .env

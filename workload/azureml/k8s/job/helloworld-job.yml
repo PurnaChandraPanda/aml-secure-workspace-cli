@@ -1,0 +1,7 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+command: python -c "print('Hello world!')"
+environment:
+  image: library/python:latest
+compute: azureml:k8s-compute
+resources:
+  instance_type: usernodetype

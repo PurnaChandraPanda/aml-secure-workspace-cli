@@ -1,0 +1,19 @@
+apiVersion: amlarc.azureml.com/v1alpha1
+kind: InstanceType
+metadata:
+  # Referenced from ML jobs/endpoints via `instance_type: usernodetype`
+  name: usernodetype
+spec:
+  # nodeSelector attracts ML workload pods to the user node pool.
+  # This default is overridden at apply time by ml-k8s-compute.sh using a native
+  # `kubectl patch` that sets spec.nodeSelector.agentpool = $AGENTPOOL_NAME.
+  # Taints only repel; this nodeSelector is what places workloads on userpool1.
+  nodeSelector:
+    agentpool: userpool1
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      cpu: "2"
+      memory: "4Gi"
