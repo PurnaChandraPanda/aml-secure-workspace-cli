@@ -26,5 +26,7 @@ winget install HashiCorp.Terraform
     - Deploy Foundry standard agent in BYO VNET with existing AOAI
 - [15b-aoaiexist-private-standard-agent](./15b-aoaiexist-private-standard-agent/readme.md)
     - Update Foundry standard agent with existing AOAI
+- [15b-azmonpub-private-network-standard-agent-setup-byovnet](./15b-azmonpub-private-network-standard-agent-setup-byovnet/readme.md)
+    - Create foundry standard agent with public azure monitor
 - [ai-service-model-deploy](./ai-service-model-deploy/readme.md)
     - Deploy model from model catalog in Foundry

@@ -6,6 +6,8 @@ For bicep template, no special installation is needed. It's all supported native
 
 - [15-aoaiexisting-private-network-standard-agent-setup](./15-aoaiexisting-private-network-standard-agent-setup/README.md)
     - Deploy Foundry standard agent in BYO VNET with existing AOAI
+- [15-azmonpub-private-network-standard-agent-setup](./15-azmonpub-private-network-standard-agent-setup/readme.md)
+    - Deploy Foundry standard agent in byo vnet but azure monitor is public
 - [43-aoaiexisting-foundry-standard-agent-setup](./43-aoaiexisting-foundry-standard-agent-setup/README.md)
     - Update Foundry standard agent with existing AOAI
 - [ai-service-model-deploy](./ai-service-model-deploy/readme.md)
